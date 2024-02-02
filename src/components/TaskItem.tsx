@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Task } from "../App";
 import DeleteButton from "./DeleteButton";
 import TaskInput from "./TaskInput";
@@ -10,7 +11,15 @@ type Props = {
   dispatchDelete: (id: number) => void;
 };
 
-function TaskItem({ task, dispatchToggle, dispatchUpdate, dispatchDelete }: Props) {
+// Memoize component so that it skips re-rendering if props are unchanged
+// If you do not do this, all TaskItems component in the list will re-render
+// whenever a task is created, updated, or deleted
+const TaskItem = memo(function ({
+  task,
+  dispatchToggle,
+  dispatchUpdate,
+  dispatchDelete,
+}: Props) {
   return (
     <li
       id="task-container"
@@ -25,6 +34,6 @@ function TaskItem({ task, dispatchToggle, dispatchUpdate, dispatchDelete }: Prop
       <DeleteButton task={task} dispatchHandler={dispatchDelete} />
     </li>
   );
-}
+});
 
 export default TaskItem;
