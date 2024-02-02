@@ -1,10 +1,6 @@
 import { AdjustmentsHorizontalIcon, PlusIcon } from "@heroicons/react/16/solid";
-import {
-  CheckCircleIcon as UncheckedCircleIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { useReducer, useState } from "react";
-import TaskInput from "./components/TaskInput";
+import TaskItem from "./components/TaskItem";
 
 export interface Task {
   id: number;
@@ -62,21 +58,6 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
 
 const initialState: TaskState = { tasks: [] };
 
-function ToggleButton({
-  onClick,
-}: {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
-  return (
-    <button
-      className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-50"
-      onClick={onClick}
-    >
-      <UncheckedCircleIcon className="h-6 w-6" />
-    </button>
-  );
-}
-
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
   const [taskText, setTaskText] = useState<string>("");
@@ -91,7 +72,7 @@ function App() {
   const updateTask = (id: number, text: string) =>
     dispatch({ type: "update", id, text });
   const toggleTask = (id: number) => dispatch({ type: "toggle", id });
-  const deleteTodo = (id: number) => dispatch({ type: "delete", id });
+  const deleteTask = (id: number) => dispatch({ type: "delete", id });
 
   console.log(state.tasks);
 
@@ -149,28 +130,12 @@ function App() {
             className="flex flex-col gap-2 overflow-auto"
           >
             {state.tasks.map((task) => (
-              <li
-                id="task-container"
-                key={task.id}
-                aria-label="first task"
-                className={`flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary p-4 text-light text-md ${
-                  task.completed && "line-through"
-                }`}
-              >
-                <ToggleButton
-                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                    e.stopPropagation(); // Prevent onClick event from propagating to the li element, otherwise toggleTask() runs twice
-                    toggleTask(task.id);
-                  }}
-                />
-                <TaskInput task={task} dispatchHandler={updateTask} />
-                <button
-                  className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-10"
-                  onClick={() => deleteTodo(task.id)}
-                >
-                  <TrashIcon className="h-6 w-6" />
-                </button>
-              </li>
+              <TaskItem
+                task={task}
+                dispatchToggle={toggleTask}
+                dispatchUpdate={updateTask}
+                dispatchDelete={deleteTask}
+              />
             ))}
           </ul>
         </div>
