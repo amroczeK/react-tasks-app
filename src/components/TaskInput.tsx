@@ -19,9 +19,14 @@ function TaskInput({ task, dispatchHandler }: Props) {
       value={currentText}
       onChange={updateTextHandler}
       onKeyDown={(e) =>
-        e.key === "Enter" && dispatchHandler(task.id, e.currentTarget.value)
+        e.currentTarget.value !== task.text &&
+        e.key === "Enter" &&
+        dispatchHandler(task.id, e.currentTarget.value)
       }
-      onBlur={(e) => dispatchHandler(task.id, e.currentTarget.value)}
+      onBlur={(e) =>
+        e.currentTarget.value !== task.text &&
+        dispatchHandler(task.id, e.currentTarget.value)
+      }
     />
   );
 }
