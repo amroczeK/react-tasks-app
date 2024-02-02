@@ -22,7 +22,6 @@ type TaskAction =
 function taskReducer(state: TaskState, action: TaskAction): TaskState {
   switch (action.type) {
     case "create": {
-      console.log("CREATE");
       const newTask: Task = {
         id: Date.now(),
         text: action.text,
@@ -31,8 +30,6 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       return { tasks: [...state.tasks, newTask] };
     }
     case "update": {
-      console.log("update");
-
       return {
         tasks: state.tasks.map((task) =>
           task.id === action.id ? { ...task, text: action.text } : task
@@ -40,7 +37,6 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       };
     }
     case "toggle": {
-      console.log("TOGGLE");
       return {
         tasks: state.tasks.map((task) =>
           task.id === action.id ? { ...task, completed: !task.completed } : task
@@ -48,7 +44,6 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       };
     }
     case "delete":
-      console.log("DELETE");
       return {
         tasks: state.tasks.filter((task) => task.id !== action.id),
       };
@@ -62,6 +57,7 @@ const initialState: TaskState = { tasks: [] };
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
 
+  // Cache dispatch functions so they are not re-created between re-renders when state changes
   const createTask = useCallback(
     (text: string) => {
       if (text) dispatch({ type: "create", text });

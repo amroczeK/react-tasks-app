@@ -33,7 +33,7 @@ function CreateTask({ dispatchCreate }: Props) {
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === "Space") {
-            dispatchCreate(e.currentTarget.value);
+            dispatchCreate(taskText);
             setTaskText("");
           }
         }}
