@@ -17,6 +17,7 @@ interface TaskState {
 
 type TaskAction =
   | { type: "create"; text: string }
+  | { type: "update"; id: number; text: string }
   | { type: "toggle"; id: number }
   | { type: "delete"; id: number };
 
@@ -30,6 +31,15 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
         completed: false,
       };
       return { tasks: [...state.tasks, newTask] };
+    }
+    case "update": {
+      console.log("update");
+
+      return {
+        tasks: state.tasks.map((task) =>
+          task.id === action.id ? { ...task, text: action.text } : task
+        ),
+      };
     }
     case "toggle": {
       console.log("TOGGLE");
@@ -75,6 +85,8 @@ function App() {
   const onTaskInput = (text: string) => setTaskText(text);
   const createTask = (text: string) =>
     text && dispatch({ type: "create", text });
+  const updateTask = (id: number, text: string) =>
+    dispatch({ type: "update", id, text });
   const toggleTask = (id: number) => dispatch({ type: "toggle", id });
   const deleteTodo = (id: number) => dispatch({ type: "delete", id });
 
