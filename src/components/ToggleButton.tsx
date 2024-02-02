@@ -1,4 +1,3 @@
-import React from "react";
 import { Task } from "../App";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
