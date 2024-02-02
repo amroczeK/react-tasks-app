@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1,
+h2,
+h3,
+h4,
+p,
+time {
+  @apply text-light text-sm;
+}
+
+body {
+  scrollbar-gutter: stable;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #27272a;
+  border-radius: 999px;
+  padding-left: 1rem;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #fafafa;
+  border-radius: 999px;
+}
