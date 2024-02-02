@@ -1,13 +1,9 @@
-import {
-  AdjustmentsHorizontalIcon,
-  CheckCircleIcon,
-  PlusIcon,
-} from "@heroicons/react/16/solid";
+import { AdjustmentsHorizontalIcon, PlusIcon } from "@heroicons/react/16/solid";
 import {
   CheckCircleIcon as UncheckedCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 
 interface Task {
   id: number;
@@ -27,6 +23,7 @@ type TaskAction =
 function taskReducer(state: TaskState, action: TaskAction): TaskState {
   switch (action.type) {
     case "create": {
+      console.log("CREATE");
       const newTask: Task = {
         id: Date.now(),
         text: action.text,
@@ -35,7 +32,7 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       return { tasks: [...state.tasks, newTask] };
     }
     case "toggle": {
-      console.log("HERE");
+      console.log("TOGGLE");
       return {
         tasks: state.tasks.map((task) =>
           task.id === action.id ? { ...task, completed: !task.completed } : task
@@ -43,6 +40,7 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       };
     }
     case "delete":
+      console.log("DELETE");
       return {
         tasks: state.tasks.filter((task) => task.id !== action.id),
       };
@@ -54,27 +52,27 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
 const initialState: TaskState = { tasks: [] };
 
 function ToggleButton({
-  completed = false,
   onClick,
 }: {
-  completed: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
-    <button onClick={onClick}>
-      {completed ? (
-        <CheckCircleIcon className="h-6 w-6 text-light" />
-      ) : (
-        <UncheckedCircleIcon className="h-6 w-6 text-secondary group-hover:text-light" />
-      )}
+    <button
+      className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-50"
+      onClick={onClick}
+    >
+      <UncheckedCircleIcon className="h-6 w-6" />
     </button>
   );
 }
 
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
+  const [taskText, setTaskText] = useState<string>("");
+
   const currentDate = new Date();
 
+  const onTaskInput = (text: string) => setTaskText(text);
   const createTask = (text: string) =>
     text && dispatch({ type: "create", text });
   const toggleTask = (id: number) => dispatch({ type: "toggle", id });
@@ -109,6 +107,8 @@ function App() {
               type="text"
               className="w-full bg-primary text-light placeholder-secondar pl-1.5"
               placeholder="Add a task"
+              value={taskText}
+              onChange={(e) => onTaskInput(e.currentTarget.value)}
               onKeyDown={(e) =>
                 e.key === "Enter" && createTask(e.currentTarget.value)
               }
@@ -116,7 +116,7 @@ function App() {
             <button
               aria-label="Add the task to list"
               className="p-1 rounded-md hover:bg-secondary self-center"
-              onClick={(e) => createTask(e.currentTarget.value)}
+              onClick={() => createTask(taskText)}
               onKeyDown={(e) =>
                 (e.key === "Enter" || e.key === "Space") &&
                 createTask(e.currentTarget.value)
@@ -133,22 +133,27 @@ function App() {
           >
             {state.tasks.map((task) => (
               <li
+                id="task-container"
                 key={task.id}
                 aria-label="first task"
-                className={`group flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary cursor-pointer p-4 text-light text-md ${
+                className={`flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary cursor-pointer p-4 text-light text-md ${
                   task.completed && "line-through"
                 }`}
-                onClick={() => toggleTask(task.id)}
+                onClick={() => {
+                  toggleTask(task.id);
+                }}
               >
                 <ToggleButton
-                  completed={task.completed}
-                  onClick={() => toggleTask(task.id)}
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation(); // Prevent onClick event from propagating to the li element, otherwise toggleTask() runs twice
+                    toggleTask(task.id);
+                  }}
                 />
                 <div className="w-full overflow-hidden">
                   <p className="line-clamp-1">{task.text}</p>
                 </div>
                 <button
-                  className="p-1 rounded-md hover:bg-white text-light hover:text-primary"
+                  className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-10"
                   onClick={() => deleteTodo(task.id)}
                 >
                   <TrashIcon className="h-6 w-6" />
