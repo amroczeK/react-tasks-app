@@ -4,8 +4,9 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useReducer, useState } from "react";
+import TaskInput from "./components/TaskInput";
 
-interface Task {
+export interface Task {
   id: number;
   text: string;
   completed: boolean;
@@ -83,12 +84,16 @@ function App() {
   const currentDate = new Date();
 
   const onTaskInput = (text: string) => setTaskText(text);
-  const createTask = (text: string) =>
+  const createTask = (text: string) => {
     text && dispatch({ type: "create", text });
+    setTaskText("");
+  };
   const updateTask = (id: number, text: string) =>
     dispatch({ type: "update", id, text });
   const toggleTask = (id: number) => dispatch({ type: "toggle", id });
   const deleteTodo = (id: number) => dispatch({ type: "delete", id });
+
+  console.log(state.tasks);
 
   return (
     <main>
@@ -148,12 +153,9 @@ function App() {
                 id="task-container"
                 key={task.id}
                 aria-label="first task"
-                className={`flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary cursor-pointer p-4 text-light text-md ${
+                className={`flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary p-4 text-light text-md ${
                   task.completed && "line-through"
                 }`}
-                onClick={() => {
-                  toggleTask(task.id);
-                }}
               >
                 <ToggleButton
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -161,9 +163,7 @@ function App() {
                     toggleTask(task.id);
                   }}
                 />
-                <div className="w-full overflow-hidden">
-                  <p className="line-clamp-1">{task.text}</p>
-                </div>
+                <TaskInput task={task} dispatchHandler={updateTask} />
                 <button
                   className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-10"
                   onClick={() => deleteTodo(task.id)}
