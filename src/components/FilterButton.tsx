@@ -5,7 +5,7 @@ function FilterButton() {
     <button
       aria-label="Task filter"
       className="p-1 rounded-md hover:bg-secondary self-center"
-      onClick={() => alert("Hello")}
+      onClick={() => alert("TODO: Implement filter")}
     >
       <AdjustmentsHorizontalIcon className="h-6 w-6 text-light" />
     </button>
