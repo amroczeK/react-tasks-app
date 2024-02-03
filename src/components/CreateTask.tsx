@@ -1,12 +1,18 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useCallback, useContext, useState } from "react";
+import { TasksDispatchContext } from "../context/TasksContext";
 
-type Props = {
-  dispatchCreate: (text: string) => void;
-};
-
-function CreateTask({ dispatchCreate }: Props) {
+function CreateTask() {
+  const dispatch = useContext(TasksDispatchContext);
   const [taskText, setTaskText] = useState<string>("");
+
+  // Cache function so it's not re-created between re-renders when state changes
+  const createTask = useCallback(
+    (text: string) => {
+      if (text) dispatch({ type: "CREATE", text });
+    },
+    [dispatch]
+  );
 
   const onTaskInput = (text: string) => setTaskText(text);
   return (
@@ -19,7 +25,7 @@ function CreateTask({ dispatchCreate }: Props) {
         onChange={(e) => onTaskInput(e.currentTarget.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            dispatchCreate(e.currentTarget.value);
+            createTask(e.currentTarget.value);
             setTaskText("");
           }
         }}
@@ -28,12 +34,12 @@ function CreateTask({ dispatchCreate }: Props) {
         aria-label="Add the task to list"
         className="p-1 rounded-md hover:bg-secondary self-center"
         onClick={() => {
-          dispatchCreate(taskText);
+          createTask(taskText);
           setTaskText("");
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === "Space") {
-            dispatchCreate(taskText);
+            createTask(taskText);
             setTaskText("");
           }
         }}

@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from "react";
+import { useReducer } from "react";
 import TaskItem from "./components/TaskItem";
 import Header from "./components/Header";
 import CreateTask from "./components/CreateTask";
@@ -59,35 +59,6 @@ const initialState: TaskState = { tasks: [] };
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
 
-  // Cache dispatch functions so they are not re-created between re-renders when state changes
-  const createTask = useCallback(
-    (text: string) => {
-      if (text) dispatch({ type: "CREATE", text });
-    },
-    [dispatch]
-  );
-
-  const updateTask = useCallback(
-    (id: number, text: string) => {
-      dispatch({ type: "UPDATE", id, text });
-    },
-    [dispatch]
-  );
-
-  const toggleTask = useCallback(
-    (id: number) => {
-      dispatch({ type: "TOGGLE", id });
-    },
-    [dispatch]
-  );
-
-  const deleteTask = useCallback(
-    (id: number) => {
-      dispatch({ type: "DELETE", id });
-    },
-    [dispatch]
-  );
-
   return (
     <TasksContext.Provider value={state}>
       <TasksDispatchContext.Provider value={dispatch}>
@@ -95,7 +66,7 @@ function App() {
           <div className=" bg-primary h-screen w-screen p-4 flex justify-center items-center">
             <div className="flex flex-col p-4 w-full h-2/3 sm:w-[640px] border border-secondary rounded-xl gap-4">
               <Header />
-              <CreateTask dispatchCreate={createTask} />
+              <CreateTask />
               <ul
                 aria-label="Today's tasks"
                 tabIndex={0}
@@ -103,13 +74,7 @@ function App() {
                 className="flex flex-col gap-2 overflow-auto"
               >
                 {state.tasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    dispatchToggle={toggleTask}
-                    dispatchUpdate={updateTask}
-                    dispatchDelete={deleteTask}
-                  />
+                  <TaskItem key={task.id} task={task} />
                 ))}
               </ul>
             </div>

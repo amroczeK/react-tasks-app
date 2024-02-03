@@ -6,20 +6,12 @@ import ToggleButton from "./ToggleButton";
 
 type Props = {
   task: Task;
-  dispatchToggle: (id: number) => void;
-  dispatchUpdate: (id: number, text: string) => void;
-  dispatchDelete: (id: number) => void;
 };
 
 // Memoize component so that it skips re-rendering if props are unchanged
 // If you do not do this, all TaskItems component in the list will re-render
 // whenever a task is created, updated, or deleted
-const TaskItem = memo(function ({
-  task,
-  dispatchToggle,
-  dispatchUpdate,
-  dispatchDelete,
-}: Props) {
+const TaskItem = memo(function ({ task }: Props) {
   return (
     <li
       id="task-container"
@@ -29,9 +21,9 @@ const TaskItem = memo(function ({
         task.completed && "line-through"
       }`}
     >
-      <ToggleButton task={task} dispatchHandler={dispatchToggle} />
-      <TaskInput task={task} dispatchHandler={dispatchUpdate} />
-      <DeleteButton task={task} dispatchHandler={dispatchDelete} />
+      <ToggleButton task={task} />
+      <TaskInput task={task} />
+      <DeleteButton task={task} />
     </li>
   );
 });
