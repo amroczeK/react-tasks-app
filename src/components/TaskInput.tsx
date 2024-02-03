@@ -24,6 +24,7 @@ function TaskInput({ task }: Props) {
   return (
     <input
       aria-label="Edit task"
+      aria-description="Edit task by typing and pressing enter or navigating away in list"
       className={`w-full bg-primary text-light line-clamp-1 rounded-sm pl-1.5 ${
         task.completed && "line-through"
       }`}

@@ -1,8 +1,9 @@
 import { useReducer } from "react";
-import TaskItem from "./components/TaskItem";
 import Header from "./components/Header";
 import CreateTask from "./components/CreateTask";
 import { TasksContext, TasksDispatchContext } from "./context/TasksContext";
+import TaskList from "./components/TaskList";
+import { produce } from "immer";
 
 export interface Task {
   id: number;
@@ -32,23 +33,44 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       return { tasks: [...state.tasks, newTask] };
     }
     case "UPDATE": {
-      return {
-        tasks: state.tasks.map((task) =>
-          task.id === action.id ? { ...task, text: action.text } : task
-        ),
-      };
+      // Find and update the task using immer immutability library
+      // This makes our original state immutable by cloning original state and returning new state
+      // This will improve performance by minimizing operations performend on large arrays
+      const newState = produce(state, (draftState) => {
+        const task = draftState.tasks.find((task) => task.id === action.id);
+        if (task) {
+          task.text = action.text;
+        }
+      });
+      return newState;
     }
     case "TOGGLE": {
-      return {
-        tasks: state.tasks.map((task) =>
-          task.id === action.id ? { ...task, completed: !task.completed } : task
-        ),
-      };
+      // Find and update the task completion status using immer immutability library
+      // This makes our original state immutable by cloning original state and returning new state
+      // This will improve performance by minimizing operations performend on large arrays
+      const newState = produce(state, (draftState) => {
+        const task = draftState.tasks.find((task) => task.id === action.id);
+        if (task) {
+          task.completed = !task.completed;
+        }
+      });
+      return newState;
     }
-    case "DELETE":
-      return {
-        tasks: state.tasks.filter((task) => task.id !== action.id),
-      };
+    case "DELETE": {
+      // Find and delete the task using immer immutability library
+      // This makes our original state immutable by cloning original state and returning new state
+      // This will improve performance by minimizing operations performend on large arrays
+      const newState = produce(state, (draftState) => {
+        const index = draftState.tasks.findIndex(
+          (task) => task.id === action.id
+        );
+        if (index !== -1) {
+          draftState.tasks.splice(index, 1);
+        }
+      });
+      return newState;
+    }
+
     default:
       return state;
   }
@@ -56,6 +78,12 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
 
 const initialState: TaskState = { tasks: [] };
 
+/**
+ * If list of tasks is very long, consider implementing windowing or virtualization techniques
+ * to improve performance and efficieny rendering large sets of data/elements.
+ * Use react-window or react-virtualized packages to achieve this easily.
+ * Use cases: Displaying large tables or infinite scrolling.
+ */
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
 
@@ -67,16 +95,7 @@ function App() {
             <div className="flex flex-col p-4 w-full h-2/3 sm:w-[640px] border border-secondary rounded-xl gap-4">
               <Header />
               <CreateTask />
-              <ul
-                aria-label="Today's tasks"
-                tabIndex={0}
-                id="todos-container"
-                className="flex flex-col gap-2 overflow-auto"
-              >
-                {state.tasks.map((task) => (
-                  <TaskItem key={task.id} task={task} />
-                ))}
-              </ul>
+              <TaskList />
             </div>
           </div>
         </main>
