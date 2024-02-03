@@ -12,6 +12,7 @@ function DeleteButton({ task }: Props) {
   
   return (
     <button
+      aria-label="Delete task"
       className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-10"
       onClick={() => dispatch({ type: "DELETE", id: task.id })}
     >

@@ -31,7 +31,7 @@ function CreateTask() {
         }}
       />
       <button
-        aria-label="Add the task to list"
+        aria-label="Create task"
         className="p-1 rounded-md hover:bg-secondary self-center"
         onClick={() => {
           createTask(taskText);

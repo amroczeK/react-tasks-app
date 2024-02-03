@@ -9,9 +9,12 @@ type Props = {
 
 function ToggleButton({ task }: Props) {
   const dispatch = useContext(TasksDispatchContext);
-  
+
   return (
     <button
+      aria-label={`Task completion toggle, task status ${
+        task.completed ? "completed" : "incomplete"
+      }`}
       className="p-1 rounded-md hover:bg-white text-light hover:text-primary z-50"
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation(); // Prevent onClick event from propagating to the li element, otherwise toggleTask() runs twice

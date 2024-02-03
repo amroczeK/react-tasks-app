@@ -23,7 +23,10 @@ function TaskInput({ task }: Props) {
 
   return (
     <input
-      className="w-full bg-primary text-light line-clamp-1 rounded-sm pl-1.5"
+      aria-label="Edit task"
+      className={`w-full bg-primary text-light line-clamp-1 rounded-sm pl-1.5 ${
+        task.completed && "line-through"
+      }`}
       type="text"
       value={currentText}
       onChange={updateTextHandler}

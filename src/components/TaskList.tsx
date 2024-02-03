@@ -8,7 +8,7 @@ function TaskList() {
 
   return (
     <ul
-      aria-label="Today's tasks"
+      aria-description="Today's tasks"
       tabIndex={0}
       id="todos-container"
       className="flex flex-col gap-2 overflow-auto"

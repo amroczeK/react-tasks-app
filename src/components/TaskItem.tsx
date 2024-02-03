@@ -16,7 +16,7 @@ const TaskItem = memo(function ({ task }: Props) {
     <li
       id="task-container"
       key={task.id}
-      aria-label="first task"
+      aria-description={task.text}
       className={`flex gap-4 items-center h-fit max-h-24 rounded-md border border-secondary hover:bg-secondary p-4 text-light text-md ${
         task.completed && "line-through"
       }`}
