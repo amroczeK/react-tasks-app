@@ -36,6 +36,8 @@ function taskReducer(state: TaskState, action: TaskAction): TaskState {
       // Find and update the task using immer immutability library
       // This makes our original state immutable by cloning original state and returning new state
       // This will improve performance by minimizing operations performend on large arrays
+      // Time Complexity: O(n), where n is the number of tasks in the array. This is due to the linear search to find the task.
+      // Space Complexity: Close to O(1), as Immer uses a copy-on-write mechanism and efficiently manages the draft and final state, especially when only a small part of the state is changed.
       const newState = produce(state, (draftState) => {
         const task = draftState.tasks.find((task) => task.id === action.id);
         if (task) {
