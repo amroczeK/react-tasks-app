@@ -23,6 +23,7 @@ function TaskInput({ task }: Props) {
 
   return (
     <input
+      data-testid={`task-input-${task.id}`}
       aria-label="Edit task"
       aria-description="Edit task by typing and pressing enter or navigating away in list"
       className={`w-full bg-primary text-light line-clamp-1 rounded-sm pl-1.5 ${
